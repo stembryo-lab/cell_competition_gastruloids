@@ -22,4 +22,4 @@ Trimmed reads are then aligned to reference genome version GRCm38.p6 using STAR 
 ```
 
 ### 3. Constructing expression matrix
-Once the reads are properly mapped, 'countdata_construct.ipynb' concatenates all aligned for each sample into single count matrix.
+Once the reads are properly mapped, *countdata_construct.ipynb* concatenates all aligned for each sample into single count matrix.
