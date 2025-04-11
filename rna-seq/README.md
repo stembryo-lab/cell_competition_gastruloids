@@ -28,7 +28,8 @@ Common analyses performed here:
 - Data normalization and transformation
 - Quality control and exploratory data analysis
 - Differential gene expression analysis
-- Functional enrichment analysis
+- Spatial reconstruction of cell populations
+- Integration to embryo pseudobulk
 - Visualization of results
 
 ## Getting Started
