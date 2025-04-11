@@ -15,13 +15,13 @@ To assess raw FASTQ quality and perform adapter trimming, run:
 ./qc_trimming.sh
 ```
 
-# 2. Alignment with STAR
+### 2. Alignment with STAR
 Trimmed reads are then aligned to reference genome version GRCm38.p6 using STAR aligner by running:
 ```bash
 ./mapping.sh
 ```
 
-# Constructing expression matrix
+### 3.Constructing expression matrix
 Once the reads are properly mapped, 'countdata_construct.ipynb' concatenates all aligned for each sample into single count matrix.
 
 ## Downstream analysis
