@@ -37,13 +37,15 @@ The `examples` folder contains minimal examples of all analyses performed in thi
 The `complete_analysis` folder contains all the code used to produce the image-analysis results shown in the article.  
 This folder is provided **for reference only**, as the scripts will not run directly because the complete dataset is not included in this repository.
 
----
-
 Below, you will find:
 
 1. A complete guide on how to run the examples.  
 2. A walkthrough of the structure of the `complete_analysis` folder so the reader can map each script to its corresponding figure or panel in the paper.
 
-### Example Workflows (Runnable)
+---
 
 ### Example Workflows (Runnable)
+
+---
+
+### Full Analysis Pipeline (Reference Only)
