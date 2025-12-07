@@ -47,7 +47,7 @@ batch_args = {
 
 master_path_to_data = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/competition/"
 master_path_to_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/segmentation/"
-               
+
 for EXP in EXPERIMENTS:
     if EXP=="2023_11_17_Casp3":
         TIMES = ["48hr", "72hr", "96hr"]
