@@ -1,7 +1,5 @@
 ### LOAD PACKAGE ###
-from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path
-import numpy as np
-import matplotlib.pyplot as plt
+from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 
 ### LOAD STARDIST MODEL ###
 from stardist.models import StarDist2D
@@ -31,7 +29,22 @@ error_correction_args = {
     'backup_steps': 10,
     'line_builder_mode': 'points',
 }
- 
+
+plot_args = {
+    'plot_layout': (1,1),
+    'plot_overlap': 1,
+    'masks_cmap': 'tab10',
+    'plot_stack_dims': (512, 512), 
+    'plot_centers':[False, False], # [Plot center as a dot, plot label on 3D center]
+    'channels':[0],
+    'min_outline_length':75,
+}
+
+batch_args = {
+    'name_format':"ch"+str(0)+"_{}",
+    'extension':".tif",
+} 
+
 master_path_to_data = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/competition/"
 master_path_to_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/segmentation/"
                
@@ -61,21 +74,13 @@ for EXP in EXPERIMENTS:
                 file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
                 path_save = path_save_dir+embcode
                 check_or_create_dir(path_save)
-
-
                 
                 ch = channel_names.index("F3")
                 
-                batch_args = {
-                    'name_format':"ch"+str(ch)+"_{}",
-                    'extension':".tif",
-                } 
+                batch_args['name_format'] = "ch"+str(ch)+"_{}"
                 plot_args['channels'] = [ch]
                 
-                chans = [ch]
-                for _ch in range(len(channel_names)):
-                    if _ch not in chans:
-                        chans.append(_ch)
+                chans = fill_channels(channel=ch, channel_names=channel_names)
                         
                 CT_F3 = cellSegTrack(
                     path_data,
@@ -92,24 +97,10 @@ for EXP in EXPERIMENTS:
                 # CT_F3.plot(plot_args=plot_args)
                     
                 ch = channel_names.index("A12")
-                batch_args = {
-                    'name_format':"ch"+str(ch)+"_{}",
-                    'extension':".tif",
-                }
-                plot_args = {
-                    'plot_layout': (1,1),
-                    'plot_overlap': 1,
-                    'masks_cmap': 'tab10',
-                    'plot_stack_dims': (512, 512), 
-                    'plot_centers':[False, False], # [Plot center as a dot, plot label on 3D center]
-                    'channels':[ch],
-                    'min_outline_length':75,
-                }
+                batch_args['name_format'] = "ch"+str(ch)+"_{}"                
+                plot_args['channels'] = [ch]
 
-                chans = [ch]
-                for _ch in range(len(channel_names)):
-                    if _ch not in chans:
-                        chans.append(_ch)
+                chans = fill_channels(channel=ch, channel_names=channel_names)
 
                 CT_A12 = cellSegTrack(
                     path_data,
