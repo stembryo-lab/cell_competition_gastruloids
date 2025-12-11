@@ -25,21 +25,6 @@ concatenation3D_args = {
     'min_cell_planes': 2,
 }
 
-error_correction_args = {
-    'backup_steps': 10,
-    'line_builder_mode': 'points',
-}
-
-plot_args = {
-    'plot_layout': (1,1),
-    'plot_overlap': 1,
-    'masks_cmap': 'tab10',
-    'plot_stack_dims': (512, 512), 
-    'plot_centers':[False, False], # [Plot center as a dot, plot label on 3D center]
-    'channels':[0],
-    'min_outline_length':75,
-}
-
 batch_args = {
     'name_format':"ch"+str(0)+"_{}",
     'extension':".tif",
@@ -55,20 +40,19 @@ for EXP in EXPERIMENTS:
         TIMES = ["48hr", "60hr", "72hr", "96hr"]
         
     for TIME in TIMES:
+        if EXP=="2023_11_17_Casp3":
+            channel_names = ["F3", "A12", "DAPI", "Casp3", "BF"]
+            if TIME=="96hr":
+                channel_names = ["A12", "F3", "Casp3", "BF", "DAPI"]
+        elif EXP=="2024_03_Casp3":
+            channel_names = ["F3", "A12", "DAPI", "Casp3", "BF"]
+            
         for COND in CONDS:
             path_data_dir=correct_path(master_path_to_data)+"{}/stacks/{}/{}/".format(EXP, TIME, COND)
             path_save_dir=correct_path(master_path_to_save)+"{}/segmentation_results/{}/{}/".format(EXP, TIME, COND)
             check_or_create_dir(path_save_dir)
-
             files = get_file_names(path_data_dir)
             
-            if EXP=="2023_11_17_Casp3":
-                channel_names = ["F3", "A12", "DAPI", "Casp3", "BF"]
-                if "96hr" in path_data_dir:
-                    channel_names = ["A12", "F3", "Casp3", "BF", "DAPI"]
-            elif EXP=="2024_03_Casp3":
-                channel_names = ["F3", "A12", "DAPI", "Casp3", "BF"]
-
             for f, file in enumerate(files):
                 path_data = path_data_dir+file
                 file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
@@ -76,10 +60,7 @@ for EXP in EXPERIMENTS:
                 check_or_create_dir(path_save)
                 
                 ch = channel_names.index("F3")
-                
                 batch_args['name_format'] = "ch"+str(ch)+"_{}"
-                plot_args['channels'] = [ch]
-                
                 chans = fill_channels(channel=ch, channel_names=channel_names)
                         
                 CT_F3 = cellSegTrack(
@@ -87,18 +68,14 @@ for EXP in EXPERIMENTS:
                     path_save,
                     segmentation_args=segmentation_args,
                     concatenation3D_args=concatenation3D_args,
-                    error_correction_args=error_correction_args,
-                    plot_args=plot_args,
                     batch_args=batch_args,
                     channels=chans
                 )
 
                 CT_F3.run()
-                # CT_F3.plot(plot_args=plot_args)
-                    
+
                 ch = channel_names.index("A12")
                 batch_args['name_format'] = "ch"+str(ch)+"_{}"                
-                plot_args['channels'] = [ch]
 
                 chans = fill_channels(channel=ch, channel_names=channel_names)
 
@@ -107,11 +84,8 @@ for EXP in EXPERIMENTS:
                     path_save,
                     segmentation_args=segmentation_args,
                     concatenation3D_args=concatenation3D_args,
-                    error_correction_args=error_correction_args,
-                    plot_args=plot_args,
                     batch_args=batch_args,
                     channels=chans
                 )
 
                 CT_A12.run()
-                # CT_A12.plot(plot_args=plot_args)
