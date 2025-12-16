@@ -1,7 +1,7 @@
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 import numpy as np
-import matplotlib.pyplot as plt
+import csv
 from sklearn.neighbors import NearestNeighbors
 
 EXPERIMENTS = ["2023_11_17_Casp3", "2024_03_Casp3"]
@@ -13,22 +13,30 @@ batch_args = {
     'extension':".tif",
 } 
 
-path_figures = "/home/pablo/Desktop/PhD/projects/GastruloidCompetition/results/densities/"
+master_path_to_data = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/competition/"
+master_path_to_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/segmentation/"
+path_figures = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/densities/"
+check_or_create_dir(path_figures)
 
 for EXP in EXPERIMENTS:
     path_figures_exp = path_figures+"{}/".format(EXP)
     check_or_create_dir(path_figures_exp)
     
     for number_of_neighs in [5 ,10, 15, 20, 30, 50, 75, 100, 200]:
-        fig, ax = plt.subplots(2,3, figsize=(12,6), sharey=True, sharex='col')
+        filenames_early = []
+        filenames_mid = []
+        filenames_late = []
+
+        densities_F3 = []
+        densities_A12 = []
+        densities_F3_early_apo = []
+        densities_A12_early_apo = []
+        densities_F3_mid_apo = []
+        densities_A12_mid_apo = []
+        densities_F3_late_apo = []
+        densities_A12_late_apo = []
         
         for ap, apo_stage in enumerate(["early", "mid", "late"]):
-
-            densities_F3_all = [[[], [], []], [[], [], []]]
-            densities_A12_all = [[[], [], []], [[], [], []]]
-            densities_F3_all_apo = [[[], [], []], [[], [], []]]
-            densities_A12_all_apo = [[[], [], []], [[], [], []]]
-            gastruloid_sizes = [[[], [], []], [[], [], []]]
                 
             for TTT, TIME in enumerate(TIMES):
                 if EXP=="2023_11_17_Casp3":
@@ -39,15 +47,10 @@ for EXP in EXPERIMENTS:
                     channel_names = ["F3", "A12", "DAPI", "Casp3", "BF"]
                     
                 for CCC, COND in enumerate(CONDS):
-                    path_data_dir='/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/competition/{}/stacks/{}/{}/'.format(EXP, TIME, COND)
-                    path_save_dir='/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/competition/{}/ctobjects/{}/{}/'.format(EXP, TIME, COND)
+                    path_data_dir=correct_path(master_path_to_data)+"{}/stacks/{}/{}/".format(EXP, TIME, COND)
+                    path_save_dir=correct_path(master_path_to_save)+"{}/segmentation_results/{}/{}/".format(EXP, TIME, COND)
                     files = get_file_names(path_data_dir)
 
-                    densities_F3 = []
-                    densities_A12 = []
-                    densities_F3_apo = []
-                    densities_A12_apo = []
-                    
                     for f, file in enumerate(files):
                         path_data = path_data_dir+file
                         file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
@@ -196,75 +199,34 @@ for EXP in EXPERIMENTS:
                         _densities_A12 = [densities[n] for n in range(len(fates)) if fates[n] == 1]
                         _densities_F3_apo = [densities[n] for n in range(len(fates)) if fates[n] == 2]
                         _densities_A12_apo = [densities[n] for n in range(len(fates)) if fates[n] == 3]
-                            
-                        densities_F3 = [*densities_F3, *_densities_F3]
-                        densities_A12 = [*densities_A12, *_densities_A12]
-                        densities_F3_apo = [*densities_F3_apo, *_densities_F3_apo]
-                        densities_A12_apo = [*densities_A12_apo, *_densities_A12_apo]
+                        
+                        if apo_stage=="early":
+                            filenames_early.append(file)
+                            densities_F3.append(np.nanmean(_densities_F3))
+                            densities_A12.append(np.nanmean(_densities_A12))
+                            densities_F3_early_apo.append(np.nanmean(_densities_F3_apo))
+                            densities_A12_early_apo.append(np.nanmean(_densities_A12_apo))
+                        elif apo_stage=="mid":
+                            filenames_mid.append(file)
+                            densities_F3_mid_apo.append(np.nanmean(_densities_F3_apo))
+                            densities_A12_mid_apo.append(np.nanmean(_densities_A12_apo))
+                        elif apo_stage=="late":
+                            filenames_late.append(file)
+                            densities_F3_late_apo.append(np.nanmean(_densities_F3_apo))
+                            densities_A12_late_apo.append(np.nanmean(_densities_A12_apo))
 
-                    densities_F3_all[CCC][TTT] = [*densities_F3_all[CCC][TTT], *densities_F3]
-                    densities_A12_all[CCC][TTT] = [*densities_A12_all[CCC][TTT], *densities_A12]
-                    densities_F3_all_apo[CCC][TTT] = [*densities_F3_all_apo[CCC][TTT], *densities_F3_apo]
-                    densities_A12_all_apo[CCC][TTT] = [*densities_A12_all_apo[CCC][TTT], *densities_A12_apo]
-                    gastruloid_sizes[CCC][TTT] = [*gastruloid_sizes[CCC][TTT], len(centers)]
+        output_file = path_figures_exp+"densities_{}neighs.csv".format(number_of_neighs)
 
-            F3s_mean_dens_WT = np.array([np.nanmean(densities_F3_all[0][i]) for i in range(3)])
-            F3s_mean_dens_KO = np.array([np.nanmean(densities_F3_all[1][i]) for i in range(3)])
-            F3s_mean_dens_apo_WT = np.array([np.nanmean(densities_F3_all_apo[0][i]) for i in range(3)])
-            F3s_mean_dens_apo_KO = np.array([np.nanmean(densities_F3_all_apo[1][i]) for i in range(3)])
+        colnames = ["file", "F3", "A12", "apo_F3_early", "apo_A12_early", "apo_F3_mid", "apo_A12_mid", "apo_F3_late", "apo_A12_late"]
+        full_data = [colnames]
+        for f in range(len(filenames_early)):
+            dat = [filenames_early[f], densities_F3[f], densities_A12[f], densities_F3_early_apo[f], densities_A12_early_apo[f], densities_F3_mid_apo[f], densities_A12_mid_apo[f], densities_F3_late_apo[f], densities_A12_late_apo[f]]
+            full_data.append(dat)
 
-            A12s_mean_dens_WT = np.array([np.nanmean(densities_A12_all[0][i]) for i in range(3)])
-            A12s_mean_dens_KO = np.array([np.nanmean(densities_A12_all[1][i]) for i in range(3)])
-            A12s_mean_dens_apo_WT = np.array([np.nanmean(densities_A12_all_apo[0][i]) for i in range(3)])
-            A12s_mean_dens_apo_KO = np.array([np.nanmean(densities_A12_all_apo[1][i]) for i in range(3)])
+        # Output CSV file path
 
-            g_sizes_WT = np.array([np.nanmean(gastruloid_sizes[0][i]) for i in range(3)])
-            g_sizes_KO = np.array([np.nanmean(gastruloid_sizes[1][i]) for i in range(3)])
-
-            F3s_stds_dens_WT = np.array([np.nanstd(densities_F3_all[0][i]) for i in range(3)])
-            F3s_stds_dens_KO = np.array([np.nanstd(densities_F3_all[1][i]) for i in range(3)])
-            A12s_stds_dens_WT = np.array([np.nanstd(densities_A12_all[0][i]) for i in range(3)])
-            A12s_stds_dens_KO = np.array([np.nanstd(densities_A12_all[1][i]) for i in range(3)])
-            g_sizes_stds_WT = np.array([np.nanstd(gastruloid_sizes[0][i]) for i in range(3)])
-            g_sizes_stds_KO = np.array([np.nanstd(gastruloid_sizes[1][i]) for i in range(3)])
-
-            conds = np.array([48, 72, 96])
-
-            ax[0, ap].set_title("{} apoptotis".format(apo_stage))
-            ax[0, ap].plot(conds, F3s_mean_dens_WT, color="green", lw=3, label="F3")
-            ax[0, ap].scatter(conds, F3s_mean_dens_WT, color="green", s=100, edgecolor="k", zorder=10)
-            ax[0, ap].plot(conds, F3s_mean_dens_apo_WT, color="green", lw=3, ls='--', label="F3 - apo")
-            ax[0, ap].scatter(conds, F3s_mean_dens_apo_WT, color="green", s=100, edgecolor="k", zorder=10)
-
-            ax[0, ap].plot(conds, A12s_mean_dens_WT, color="magenta", lw=3, label="A12")
-            ax[0, ap].scatter(conds, A12s_mean_dens_WT, color="magenta", s=100, edgecolor="k", zorder=10)
-            ax[0, ap].plot(conds, A12s_mean_dens_apo_WT, color="magenta", lw=3, ls='--', label="A12 - apo")
-            ax[0, ap].scatter(conds, A12s_mean_dens_apo_WT, color="magenta", s=100, edgecolor="k", zorder=10)
-
-            ax[1, ap].plot(conds, F3s_mean_dens_KO, color="green", lw=3, label="F3")
-            ax[1, ap].scatter(conds, F3s_mean_dens_KO, color="green", s=100, edgecolor="k", zorder=10)
-            ax[1, ap].plot(conds, F3s_mean_dens_apo_KO, color="green", lw=3, ls='--', label="F3 - apo")
-            ax[1, ap].scatter(conds, F3s_mean_dens_apo_KO, color="green", s=100, edgecolor="k", zorder=10)
-
-            ax[1, ap].plot(conds, A12s_mean_dens_KO, color="magenta", lw=3, label="A12")
-            ax[1, ap].scatter(conds, A12s_mean_dens_KO, color="magenta", s=100, edgecolor="k", zorder=10)
-            ax[1, ap].plot(conds, A12s_mean_dens_apo_KO, color="magenta", lw=3, ls='--', label="A12 - apo")
-            ax[1, ap].scatter(conds, A12s_mean_dens_apo_KO, color="magenta", s=100, edgecolor="k", zorder=10)
-
-            ax[1, ap].set_xticks(conds)
-            ax[1, ap].set_xlabel("Time (hr)")
-            if ap==0:
-                ax[0, ap].set_ylabel(r"mean $\rho_\mathrm{{local}}$  $\mu \mathrm{{m}}^{{-3}}$")
-                ax[1, ap].set_ylabel(r"mean $\rho_\mathrm{{local}}$  $\mu \mathrm{{m}}^{{-3}}$")
-
-            ax[0, ap].spines[['right', 'top']].set_visible(False)
-            ax[1, ap].spines[['right', 'top']].set_visible(False)
-
-            miny = np.min([*F3s_mean_dens_KO,*A12s_mean_dens_KO,*F3s_mean_dens_apo_KO, *A12s_mean_dens_apo_KO, *F3s_mean_dens_WT,*A12s_mean_dens_WT])
-            maxy = np.max([*F3s_mean_dens_KO,*A12s_mean_dens_KO,*F3s_mean_dens_apo_KO, *A12s_mean_dens_apo_KO, *F3s_mean_dens_WT,*A12s_mean_dens_WT])
-            
-        plt.tight_layout()
-        plt.savefig(path_figures_exp+"density_{}.svg".format(number_of_neighs))
-        plt.savefig(path_figures_exp+"density_{}.pdf".format(number_of_neighs))
-
-    plt.show()
+        # Write to CSV
+        with open(output_file, mode="w", newline="") as csvfile:
+            csv_writer = csv.writer(csvfile)
+            # Write the header
+            csv_writer.writerows(full_data)
