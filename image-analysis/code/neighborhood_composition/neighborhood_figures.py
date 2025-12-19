@@ -38,11 +38,11 @@ for EXP in EXPERIMENTS:
     check_or_create_dir(path_figures_exp)
     
     for number_of_neighs in [5 ,10, 15, 20, 30, 50, 75, 100, 200]:
-        check_or_create_dir(path_figures+"{}/".format(number_of_neighs))
+        # check_or_create_dir(path_figures+"{}/".format(number_of_neighs))
         fig, ax = plt.subplots(2,3, figsize=(12,6), sharey=True, sharex='col')
         for ap, apo_stage in enumerate(["early", "mid", "late"]):
             
-            check_or_create_dir(path_figures+"{}/{}/".format(number_of_neighs, apo_stage))
+            # check_or_create_dir(path_figures+"{}/{}/".format(number_of_neighs, apo_stage))
 
             NEIGHS_F3 = [[], []]
             NEIGHS_A12 = [[], []]
@@ -344,5 +344,5 @@ for EXP in EXPERIMENTS:
                 ax[1, ap].legend()
             
         plt.tight_layout()
-        plt.savefig(path_figures+"neighborhood_{}_{}.svg".format(EXP, number_of_neighs))
-        plt.savefig(path_figures+"neighborhood_{}_{}.pdf".format(EXP, number_of_neighs))
+        plt.savefig(path_figures_exp+"neighborhood_{}.svg".format(number_of_neighs))
+        plt.savefig(path_figures_exp+"neighborhood_{}.pdf".format(number_of_neighs))
