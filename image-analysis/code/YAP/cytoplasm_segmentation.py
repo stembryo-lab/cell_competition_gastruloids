@@ -78,7 +78,7 @@ for COND in CONDITIONS:
         chans = fill_channels(ch_nuc, channel_names=channel_names)
 
         batch_args['name_format'] = "ch"+str(ch_cyto)+"_{}"
-        
+
         CT_cyto = cellSegTrack(
             path_data,
             path_save,
@@ -345,3 +345,6 @@ data = list(zip_longest(nuc_quant_KO25_A12, cyt_quant_KO25_A12, NC_KO25, fillval
 df = pd.DataFrame(data, columns=col_names)
 path_save_dir_quant = path_csvs+"KO25/A12.csv"
 df.to_csv(path_save_dir_quant, index=False)
+
+
+plt.scatter(mask1[:, 1], mask1[: , 0])
