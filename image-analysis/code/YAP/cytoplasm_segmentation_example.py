@@ -82,6 +82,8 @@ CT_nuc = cellSegTrack(
 )
 CT_nuc.load()
 
+CT_nuc.plot_tracking()
+
 TLabels1 = [cell.label for cell in CT_cyto.jitcells]
 TLabels2 = [cell.label for cell in CT_nuc.jitcells]
 TLabels  = [TLabels1, TLabels2]

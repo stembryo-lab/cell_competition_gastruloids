@@ -28,6 +28,7 @@ batch_args = {
     'extension':".tif",
 }
 
+master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/"
 path_figures = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/figures/"
 path_csvs = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/csvs/"
 check_or_create_dir(path_figures)
@@ -35,7 +36,7 @@ check_or_create_dir(path_csvs)
 
 for COND in CONDITIONS:
     path_data_dir = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/YAP/2025_02_02_AiryscMultipl_FastMediumQuality_Files/{}/".format(COND)
-    path_save_dir = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/{}/".format(COND)
+    path_save_dir = "{}{}/".format(master_path_save, COND)
     check_or_create_dir(path_save_dir)
     
     path_csvs_COND = path_csvs+"{}/".format(COND)
@@ -162,6 +163,7 @@ for COND in CONDITIONS:
 
             mask_coincidence_cyto = ~np.isin(mask1_view, mask2_view)
             cyto_mask = np.array([mask1[i] for i, j in enumerate(mask_coincidence_cyto) if j])
+            if len(cyto_mask)<5:continue
             img = hyperstack[0,z,ch_yap]
             cyt_val = np.maximum(np.mean(img[cyto_mask[:, 1], cyto_mask[:, 0]]) - YAP_cyt_b, 0)
             cyt_quant[-1].append(cyt_val)
@@ -172,6 +174,52 @@ for COND in CONDITIONS:
             elif A12_val >= up_th:
                 nuc_quant_file_A12.append(nuc_val)
                 cyt_quant_file_A12.append(cyt_val)
+
+            # from scipy.spatial import ConvexHull
+            # r = 200
+            # # # cell = np.random.choice(range(len(masks1)))
+            # # cell = 23
+            # img = hyperstack[0, z, ch_nuc]
+
+            # # mask1 = masks1[cell]
+            # # mask2 = masks2[cell]
+
+            # hull = ConvexHull(mask1)
+            # outline1 = mask1[hull.vertices]
+            # outline1[:] = outline1[:, [1, 0]]
+
+            # hull = ConvexHull(mask2)
+            # outline2 = mask2[hull.vertices]
+            # outline2[:] = outline2[:, [1, 0]]
+
+            # center = np.mean(outline2, axis=0)
+
+            # fig, ax = plt.subplots()
+            # ax.imshow(img)
+
+            # ax.scatter(outline1[:, 1], outline1[:, 0], label="cyto")
+            # ax.scatter(outline2[:, 1], outline2[:, 0], label="nuc")
+
+            # ax.set_xlabel("($\mu$m)")
+            # ax.set_ylabel("($\mu$m)")
+
+            # xticks = np.arange(0, img.shape[-1]-1, 100)
+            # yticks = np.arange(0, img.shape[-1]-1, 100)
+
+            # ax.set_xticks(xticks)
+            # ax.set_yticks(yticks)
+
+            # scale = metadata["XYresolution"]
+            # ax.set_xticklabels([f"{x*scale:.0f}" for x in xticks])
+            # ax.set_yticklabels([f"{y*scale:.0f}" for y in yticks])
+
+            # ax.set_xlim(np.maximum(0, center[1]-r), np.minimum(img.shape[-1], center[1]+r))
+            # ax.set_ylim(np.maximum(0, center[0]-r), np.minimum(img.shape[-1], center[0]+r))
+
+            # ax.legend()
+            # plt.tight_layout()
+            # # plt.savefig("path_figures+cytoplasm.svg", dpi=300)
+            # plt.show()
 
         F3_ratio = np.array(nuc_quant_file_F3)/cyt_quant_file_F3
         A12_ratio = np.array(nuc_quant_file_A12)/cyt_quant_file_A12
@@ -199,8 +247,7 @@ for COND in CONDITIONS:
         
         path_save_dir_quant = "{}/{}_A12.csv".format(path_csvs_COND, fname)
         df.to_csv(path_save_dir_quant, index=False)
-        
-    
+
 A12_quant_WT = A12_quant[0]
 A12_quant_KO8 = A12_quant[1]
 A12_quant_KO25 = A12_quant[2]
@@ -347,4 +394,3 @@ path_save_dir_quant = path_csvs+"KO25/A12.csv"
 df.to_csv(path_save_dir_quant, index=False)
 
 
-plt.scatter(mask1[:, 1], mask1[: , 0])

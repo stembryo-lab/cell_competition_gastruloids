@@ -41,10 +41,13 @@ plot_args = {
     'min_outline_length':75,
 }
 
+master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/"
+check_or_create_dir(master_path_save)
+
 CONDITIONS = ["WT", "KO8", "KO25", "KO8_ABonly", "KO25_ABonly"]
 for COND in CONDITIONS:
     path_data_dir = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/YAP/2025_02_02_AiryscMultipl_FastMediumQuality_Files/{}/".format(COND)
-    path_save_dir = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/{}/".format(COND)
+    path_save_dir = "{}{}/".format(master_path_save, COND)
     check_or_create_dir(path_save_dir)
     
     ### GET FULL FILE NAME AND FILE CODE ###
@@ -69,9 +72,8 @@ for COND in CONDITIONS:
             batch_args=batch_args,
             channels=chans
         )
-
         CT.run()
-                
+        
         labs_to_rem = []
         for cell in CT.jitcells:
             zc = int(cell.centers[0][0])
@@ -86,3 +88,4 @@ for COND in CONDITIONS:
             CT._del_cell(lab)  
 
         CT.update_labels()
+        # CT.plot_tracking(plot_args=plot_args)

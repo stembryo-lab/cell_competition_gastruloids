@@ -43,9 +43,12 @@ plot_args = {
 }
 
 CONDITIONS = ["WT", "KO8", "KO25", "KO8_ABonly", "KO25_ABonly"]
+
+master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/"
+check_or_create_dir(master_path_save)
 for COND in CONDITIONS:
     path_data_dir = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/YAP/2025_02_02_AiryscMultipl_FastMediumQuality_Files/{}/".format(COND)
-    path_save_dir = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/{}/".format(COND)
+    path_save_dir = "{}{}/".format(master_path_save, COND)
     check_or_create_dir(path_save_dir)
     
     ### GET FULL FILE NAME AND FILE CODE ###
@@ -85,3 +88,4 @@ for COND in CONDITIONS:
             
         for lab in labs_to_rem:
             CT._del_cell(lab)  
+ 
