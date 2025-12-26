@@ -34,6 +34,7 @@ master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_
 path_to_save_results = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/figures/"
 check_or_create_dir(path_to_save_results)
 
+areas = []
 for COND in CONDS:
     for REP in repeats:
         path_data_dir="/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/p53_analysis/input/{}/{}/".format(COND,REP)
@@ -46,7 +47,6 @@ for COND in CONDS:
 
         for f, file in enumerate(files):
         
-            areas = []
 
             path_data = path_data_dir+file
             file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
@@ -96,36 +96,36 @@ for COND in CONDS:
                 areas.append(area)
 
 
-            fig, ax = plt.subplots(2,1, figsize=(5,8))
-            threshold = 0
-            data = np.array(areas)
-            ax[0].hist(data, bins=200, color=[0.0, 0.8, 0.0], density=True, alpha=0.6,)
+fig, ax = plt.subplots(2,1, figsize=(5,8))
+threshold = 0
+data = np.array(areas)
+ax[0].hist(data, bins=200, color=[0.0, 0.8, 0.0], density=True, alpha=0.6,)
 
-            x = np.arange(0, step=0.1, stop=np.max(data))
-            bw = 7
-            modelo_kde = KernelDensity(kernel="linear", bandwidth=bw)
-            modelo_kde.fit(X=data.reshape(-1, 1))
-            densidad_pred = np.exp(modelo_kde.score_samples(x.reshape((-1, 1))))
-            ax[0].plot(x, densidad_pred, color="magenta")
+x = np.arange(0, step=0.1, stop=np.max(data))
+bw = 7
+modelo_kde = KernelDensity(kernel="linear", bandwidth=bw)
+modelo_kde.fit(X=data.reshape(-1, 1))
+densidad_pred = np.exp(modelo_kde.score_samples(x.reshape((-1, 1))))
+ax[0].plot(x, densidad_pred, color="magenta")
 
-            local_minima = argrelextrema(densidad_pred, np.less)[0]
-            threshold = x[local_minima[0]]
-            x_th = np.ones(len(x)) * x[local_minima[0]]
-            y_th = np.linspace(0, np.max(densidad_pred), num=len(x))
-            ax[0].plot(x_th, y_th, c="k", ls="--",lw=2, label="debris th.")
+local_minima = argrelextrema(densidad_pred, np.less)[0]
+threshold = x[local_minima[0]]
+x_th = np.ones(len(x)) * x[local_minima[0]]
+y_th = np.linspace(0, np.max(densidad_pred), num=len(x))
+ax[0].plot(x_th, y_th, c="k", ls="--",lw=2, label="debris th.")
 
-            thresholds.append(threshold)
-            
-            ax[0].set_ylabel("count")
-            ax[1].set_ylabel("count")
+thresholds.append(threshold)
 
-            ax[1].hist(data, bins=200, color=[0.0, 0.8, 0.0], density=True, alpha=0.6)
-            ax[1].set_xlabel(r"area ($\mu$m$^2$)")
-            ax[1].plot(x, densidad_pred, color="magenta")
-            ax[1].plot(x_th, y_th, c="k", ls="--",lw=2, label="debris th.")
+ax[0].set_ylabel("count")
+ax[1].set_ylabel("count")
 
-            ax[1].set_xlim(-1, 75)
-            plt.tight_layout()
+ax[1].hist(data, bins=200, color=[0.0, 0.8, 0.0], density=True, alpha=0.6)
+ax[1].set_xlabel(r"area ($\mu$m$^2$)")
+ax[1].plot(x, densidad_pred, color="magenta")
+ax[1].plot(x_th, y_th, c="k", ls="--",lw=2, label="debris th.")
 
-            plt.savefig(path_to_save_results+"debris_thresholds.pdf")
-            plt.show()
+ax[1].set_xlim(-1, 75)
+plt.tight_layout()
+
+plt.savefig(path_to_save_results+"debris_thresholds.pdf")
+plt.show()
