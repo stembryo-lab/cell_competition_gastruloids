@@ -14,10 +14,6 @@ mpl.rc('xtick', labelsize=18)
 mpl.rc('ytick', labelsize=18) 
 mpl.rc('legend', fontsize=18) 
 
-files_to_exclude = [
-    "n2_F3(150)+WT(150)_72h_emiRFP-p53-mCh-DAPI_(40xSil)_Stack1.tif",
-    "n2_F3(150)+WT(150)_72h_emiRFP-p53-mCh-DAPI_(40xSil)_Stack2.tif"
-]
 
 def build_union_masks(CT_list):
     """
@@ -73,8 +69,7 @@ def correct_cell_pixels(CT_ref, mask, z, ch_B, ch_C, s, b0z):
     B_vals = CT_ref.hyperstack[0, z, ch_B, :, :][yy, xx].astype(np.float32)
     return C_vals - float(b0z[z]) - float(s) * B_vals
 
-CONDS = ["WT", "KO"]
-repeats = ["n2", "n3", "n4"]
+CONDS = ["auxin_48-72_48", "auxin_48-72_72" , "auxin_48-72_96", "auxin_72-96_72", "auxin_72-96_96", "noauxin_72", "noauxin_96"]
 
 batch_args = {
     'name_format':"ch"+str(0)+"_{}",
@@ -87,12 +82,12 @@ data_A12 = []
 cells_F3 = []
 cells_A12 = []
 
-master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/segmentation_results/"
-path_to_save_figures = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/figures/"
-path_to_save_results = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/p53_per_gastruloid/"
+master_path_save = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53_degron/segmentation_results/"
+path_to_save_figures = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53_degron/figures/"
+path_to_save_results = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53_degron/per_gastruloid/"
 check_or_create_dir(path_to_save_results)
 
-path_to_spillover = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/spillover/"
+path_to_spillover = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53_degron/spillover/"
 calibF3 = np.load("{}calibration_F3_to_p53.npz".format(path_to_spillover))
 p53_F3_s_global = float(calibF3["s"])
 p53_F3_0z = calibF3["b0z"]
@@ -102,99 +97,96 @@ p53_A12_s_global = float(calibA12["s"])
 p53_A12_0z = calibA12["b0z"]
 
 for COND in CONDS:
-    for REP in repeats:
-        path_data_dir="/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/p53_analysis/input/{}/{}/".format(COND,REP)
-        path_save_dir = "{}{}/{}/".format(master_path_save, COND, REP)
-        check_or_create_dir(path_save_dir)
-        files = get_file_names(path_data_dir)
+    path_data_dir="/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/p53_analysis/2025_09_09_OsTIRMosaic_p53Timecourse/{}/".format(COND)
+    path_save_dir = "{}{}/".format(master_path_save, COND)
+    check_or_create_dir(path_save_dir)
+    files = get_file_names(path_data_dir)
 
-        channel_names = ["A12", "p53", "F3", "DAPI"]
+    channel_names = ["A12", "p53", "F3", "DAPI"]
 
-        for f, file in enumerate(files):
+    for f, file in enumerate(files):
+        
+        F3_p53 = [[] for z in range(10)]
+        A12_p53 = [[] for z in range(10)]
+
+        path_data = path_data_dir+file
+        file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
+        path_save = path_save_dir+embcode
             
-            if file in files_to_exclude: continue
+        check_or_create_dir(path_save)
+        
+        ch = channel_names.index("F3")
+        batch_args['name_format'] = "ch"+str(ch)+"_{}"    
+        chans = fill_channels(channel=ch, channel_names=channel_names)
+        
+        CT_F3 = cellSegTrack(
+            path_data,
+            path_save,
+            batch_args=batch_args,
+            channels=chans
+        )
 
-            F3_p53 = [[] for z in range(10)]
-            A12_p53 = [[] for z in range(10)]
+        CT_F3.load()
 
-            path_data = path_data_dir+file
-            file, embcode = get_file_name(path_data_dir, file, allow_file_fragment=False, return_files=False, return_name=True)
-            path_save = path_save_dir+embcode
+        ch = channel_names.index("A12")
+        batch_args['name_format'] = "ch"+str(ch)+"_{}"  
+        chans = fill_channels(channel=ch, channel_names=channel_names)
+        
+        CT_A12 = cellSegTrack(
+            path_data,
+            path_save,
+            batch_args=batch_args,
+            channels=chans
+        )
+
+        CT_A12.load()
+        
+        ch_F3 = channel_names.index("F3")
+        ch_A12 = channel_names.index("A12")
+        ch_p53 = channel_names.index("p53")
+        ch_DAPI = channel_names.index("DAPI")
+
+        Mz_list = build_union_masks([CT_F3])
+        p53_F3_0z = estimate_b0z_for_file(CT_F3, Mz_list, ch_F3, ch_p53, p53_F3_s_global)
+        
+        stack_p53 = CT_A12.hyperstack[0,:,ch_p53].astype("float64")
+        
+        for cell in CT_F3.jitcells:
+            center = cell.centers[0]
+            z = int(center[0])
+            zid = cell.zs[0].index(z)
+            mask = cell.masks[0][zid]
+
+            Ccorr_vals = correct_cell_pixels(CT_F3, mask, z, ch_F3, ch_p53, p53_F3_s_global, p53_F3_0z)
+            p53_val = float(np.mean(Ccorr_vals))
+            F3_p53[z].append(p53_val)
                 
-            check_or_create_dir(path_save)
-            
-            ch = channel_names.index("F3")
-            batch_args['name_format'] = "ch"+str(ch)+"_{}"    
-            chans = fill_channels(channel=ch, channel_names=channel_names)
-            
-            CT_F3 = cellSegTrack(
-                path_data,
-                path_save,
-                batch_args=batch_args,
-                channels=chans
-            )
+        
+        Mz_list = build_union_masks([CT_A12])
+        p53_A12_0z = estimate_b0z_for_file(CT_A12, Mz_list, ch_A12, ch_p53, p53_A12_s_global)
+        
+        for cell in CT_A12.jitcells:
+            center = cell.centers[0]
+            z = int(center[0])
+            zid = cell.zs[0].index(z)
+            mask = cell.masks[0][zid]
 
-            CT_F3.load()
+            Ccorr_vals = correct_cell_pixels(CT_A12, mask, z, ch_A12, ch_p53, p53_A12_s_global, p53_A12_0z)
+            p53_val = float(np.mean(Ccorr_vals))
+            A12_p53[z].append(p53_val)
+        
+        
+        F3_p53_means = [np.mean(d) for d in F3_p53]
+        A12_p53_means = [np.mean(d) for d in A12_p53]
+        c_F3 = [len(d) for d in F3_p53]
+        c_A12 = [len(d) for d in A12_p53]
 
-            ch = channel_names.index("A12")
-            batch_args['name_format'] = "ch"+str(ch)+"_{}"  
-            chans = fill_channels(channel=ch, channel_names=channel_names)
-            
-            CT_A12 = cellSegTrack(
-                path_data,
-                path_save,
-                batch_args=batch_args,
-                channels=chans
-            )
-
-            CT_A12.load()
-            
-            ch_F3 = channel_names.index("F3")
-            ch_A12 = channel_names.index("A12")
-            ch_p53 = channel_names.index("p53")
-            ch_DAPI = channel_names.index("DAPI")
-
-            Mz_list = build_union_masks([CT_F3])
-            p53_F3_0z = estimate_b0z_for_file(CT_F3, Mz_list, ch_F3, ch_p53, p53_F3_s_global)
-            
-            stack_p53 = CT_A12.hyperstack[0,:,ch_p53].astype("float64")
-            
-            for cell in CT_F3.jitcells:
-                center = cell.centers[0]
-                z = int(center[0])
-                zid = cell.zs[0].index(z)
-                mask = cell.masks[0][zid]
-
-                Ccorr_vals = correct_cell_pixels(CT_F3, mask, z, ch_F3, ch_p53, p53_F3_s_global, p53_F3_0z)
-                p53_val = float(np.mean(Ccorr_vals))
-                F3_p53[z].append(p53_val)
-                    
-            
-            Mz_list = build_union_masks([CT_A12])
-            p53_A12_0z = estimate_b0z_for_file(CT_A12, Mz_list, ch_A12, ch_p53, p53_A12_s_global)
-            
-            for cell in CT_A12.jitcells:
-                center = cell.centers[0]
-                z = int(center[0])
-                zid = cell.zs[0].index(z)
-                mask = cell.masks[0][zid]
-
-                Ccorr_vals = correct_cell_pixels(CT_A12, mask, z, ch_A12, ch_p53, p53_A12_s_global, p53_A12_0z)
-                p53_val = float(np.mean(Ccorr_vals))
-                A12_p53[z].append(p53_val)
-            
-            
-            F3_p53_means = [np.mean(d) for d in F3_p53]
-            A12_p53_means = [np.mean(d) for d in A12_p53]
-            c_F3 = [len(d) for d in F3_p53]
-            c_A12 = [len(d) for d in A12_p53]
-
-            cells_F3.append(c_F3)
-            cells_A12.append(c_A12)
-            data_F3.append(F3_p53_means)
-            data_A12.append(A12_p53_means)
-            g_names.append(embcode)
-            
+        cells_F3.append(c_F3)
+        cells_A12.append(c_A12)
+        data_F3.append(F3_p53_means)
+        data_A12.append(A12_p53_means)
+        g_names.append(embcode)
+        
 
 import pandas as pd
 Z = len(data_F3[0])  # number of z planes, generally 10

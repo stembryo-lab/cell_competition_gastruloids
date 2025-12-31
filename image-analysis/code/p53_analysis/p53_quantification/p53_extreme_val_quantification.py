@@ -90,11 +90,11 @@ path_to_save_results = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/c
 check_or_create_dir(path_to_save_results)
 
 path_to_spillover = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/p53/spillover/"
-calibF3 = np.load("{}calibration_F3_to_p53.npz").format(path_to_spillover)
+calibF3 = np.load("{}calibration_F3_to_p53.npz".format(path_to_spillover))
 p53_F3_s_global = float(calibF3["s"])
 p53_F3_0z = calibF3["b0z"]
 
-calibA12 = np.load("{}calibration_A12_to_p53.npz").format(path_to_spillover)
+calibA12 = np.load("{}calibration_A12_to_p53.npz".format(path_to_spillover))
 p53_A12_s_global = float(calibA12["s"])
 p53_A12_0z = calibA12["b0z"]
 

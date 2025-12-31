@@ -244,7 +244,7 @@ for z in range(10):
     plt.legend(handles=legend_elements, loc="best", frameon=True)
     plt.savefig("{}clustering_z{}.svg".format(path_to_save_results, z))
 
-    plt.show()
+plt.show()
 
 # Now is time for the removal
 current_zid = [0 for z in range(10)]
