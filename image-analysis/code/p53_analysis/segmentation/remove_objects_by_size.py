@@ -1,3 +1,12 @@
+"""
+Remove debris and oversized objects from p53 nuclear segmentations.
+
+Loads precomputed F3 and A12 nuclear segmentations and filters cells based on
+area thresholds. Objects smaller than the debris cutoff or larger than an upper
+size limit are removed, and labels are updated. The curated masks are then used
+for downstream nuclear p53 quantification.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 

@@ -1,3 +1,12 @@
+"""
+Compute per z-plane thresholds for "high p53" cells after spillover correction.
+
+For each stack, load nuclear masks (F3/A12), then correct p53 intensity for
+marker→p53 bleed-through using saved calibration (s and b0(z)). For each nucleus,
+store the mean corrected p53 value. Pool values across WT+KO and define a
+z-specific high-p53 cutoff as: Q3 + k·IQR (k = 4.5).
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 import numpy as np

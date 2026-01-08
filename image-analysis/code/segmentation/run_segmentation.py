@@ -1,3 +1,16 @@
+"""
+Main pipeline for 3D cell segmentation of gastruloid imaging data.
+
+This script performs:
+- 3D cell segmentation using a StarDist2D model via the qlivecell framework
+- Concatenation of 2D segmentations across z-planes to obtain 3D cell objects
+- Independent segmentation of mCherry and emiRFP channels
+
+This script is intended solely as a preprocessing step to generate 3D segmentation
+results. Quantitative analysis (e.g. cell counts, density, neighborhood composition,
+or radial distribution) is not performed in this file.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 

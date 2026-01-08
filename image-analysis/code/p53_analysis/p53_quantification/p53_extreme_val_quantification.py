@@ -1,3 +1,14 @@
+"""
+Quantify p53-high nuclei per gastruloid.
+
+Loads curated nuclear segmentations (F3/A12), applies spillover correction to the
+p53 channel using saved calibration (s and b0(z)), then computes each nucleus'
+mean corrected p53. For each gastruloid, counts nuclei above the precomputed
+z-specific "high p53" thresholds and reports the proportion of p53-high cells
+separately for F3 and A12 populations. Generates summary plots/statistics and
+exports underlying values to CSV.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 import numpy as np

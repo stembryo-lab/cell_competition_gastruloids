@@ -1,3 +1,11 @@
+"""
+Nuclear segmentation for YAP analysis.
+
+Segments nuclei in the DAPI channel using Cellpose (cyto3) within the qlivecell
+pipeline, optionally supports manual correction, and filters out small objects
+(area < size_th) before saving the cleaned nuclear masks per file/condition.
+"""
+
 from qlivecell import get_file_name, cellSegTrack, get_file_names, check_or_create_dir, fill_channels
 from cellpose import models
 model = models.CellposeModel(gpu=True, model_type='cyto3')

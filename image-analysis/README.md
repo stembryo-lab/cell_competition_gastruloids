@@ -35,3 +35,16 @@ Below, you will find:
 ---
 
 ### Full Analysis Pipeline (Reference Only)
+
+Within the image analysis context, each type of analysis done using the segmentation results is subdivided into different folders:
+- `image/analysis/code/segmentation`: Contains the code to perform the segmentation and postprocessing of segmentation results
+- `image/analysis/code/apoptosis_segmentation`: Contains the code for the segmentation of the apoptotic events using the Casp3 stainings.
+- `image/analysis/code/counts`: Contains the code to generate to cell and apoptotic counts.
+- `image/analysis/code/density`: Contains the code for the density analysis.
+- `image/analysis/code/neighborhood_composition`: Contains the code for the neighborhood composition analysis.
+- `image/analysis/code/radial_distribution`: Contains the code for the radial distribution analysis.
+- `image/analysis/code/p53`: Contains the code for the p53 quantification analysis.
+- `image/analysis/code/p53_degron`: Contains the code for the p53 degron experiment.
+- `image/analysis/code/YAP`: Contains the code for the YAP quantification analysis.
+
+For more details, each file contains in its beginings a small description on the purpose of the file.

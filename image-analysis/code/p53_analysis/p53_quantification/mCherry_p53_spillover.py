@@ -1,8 +1,15 @@
-# =========================
-# Spillover calibration (per z baseline) and per-pixel correction
-# =========================
+"""
+Estimate and correct spectral spillover from a lineage marker (emiRFP or mCherry)
+into the p53 channel.
 
-# ---- USER CONFIG ----
+Fits a global linear model C ≈ b0 + s·B using in-cell pixels (per z-plane),
+where B is the marker channel and C is p53. The spillover slope s is estimated
+globally, while a per-z baseline b0(z) is computed as median(C - s·B).
+
+Saves calibration parameters (s, b0z) for reuse. Corrected p53 per pixel:
+C_corr = C - b0(z) - s·B.
+"""
+
 BLEED_FROM = "F3"   # <-- set to "F3" or "A12": the channel that bleeds into C ("p53")
 C_CHANNEL  = "p53"  # your readout channel (C)
 

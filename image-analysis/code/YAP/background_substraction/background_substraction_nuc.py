@@ -1,3 +1,11 @@
+"""
+Estimate nuclear YAP background intensity.
+
+Loads nuclear segmentations from antibody-only control conditions, samples YAP
+intensity within nuclear masks, and builds the background distribution used to
+define the nuclear YAP background threshold for downstream quantification.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, get_file_names, tif_reader_5D, check_or_create_dir
 import numpy as np
@@ -11,7 +19,6 @@ for COND in CONDITIONS:
     path_data_dir = "/home/pablo/Desktop/PhD/projects/Data/gastruloids/joshi/YAP/2025_02_02_AiryscMultipl_FastMediumQuality_Files/{}/".format(COND)
     path_save_dir = "/home/pablo/Desktop/papers/GastruloidCompetition_paper/cell_competition_gastruloids/image-analysis/results/YAP/segmentation_results/{}/".format(COND)
     check_or_create_dir(path_save_dir)
-
 
     ### GET FULL FILE NAME AND FILE CODE ###
     files = get_file_names(path_data_dir)

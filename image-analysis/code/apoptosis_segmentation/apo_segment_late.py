@@ -1,3 +1,12 @@
+"""
+Estimate debris in the Casp3 channel using size + intensity thresholds.
+
+Runs Casp3 segmentation, then classifies objects as debris by combining:
+(1) the previously defined area threshold and (2) a per-embryo intensity cutoff
+(90th percentile of pixel intensities). Objects failing these criteria are removed,
+yielding a debris-only segmentation for downstream quantification.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 import numpy as np

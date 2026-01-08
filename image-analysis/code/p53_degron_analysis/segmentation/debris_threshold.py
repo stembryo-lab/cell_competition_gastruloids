@@ -1,4 +1,10 @@
-# In this file we compute the debris threshold for each gastruloid
+"""
+Estimate a debris-size threshold for the p53-degron dataset.
+
+Loads F3 and A12 nuclear segmentations across all conditions, pools nuclear areas
+(µm^2), fits a KDE to the area distribution, and defines the debris cutoff as the
+first local minimum of the KDE. Saves a diagnostic plot (histogram + KDE + cutoff).
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels

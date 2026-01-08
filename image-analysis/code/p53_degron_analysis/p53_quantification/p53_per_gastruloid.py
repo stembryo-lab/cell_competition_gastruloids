@@ -1,3 +1,12 @@
+"""
+Quantify nuclear p53 per cell and per gastruloid (p53 degron timecourse).
+
+Loads curated nuclear masks for F3 and A12, applies spillover correction
+(p53_corr = p53 - b0(z) - s*marker) with per-file b0(z), and computes mean p53
+per z-plane for each gastruloid and lineage. Exports CSVs for mean p53 (F3/A12),
+cell counts (F3/A12), and an F3 z-normalized table using WT-weighted per-z means.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 import numpy as np

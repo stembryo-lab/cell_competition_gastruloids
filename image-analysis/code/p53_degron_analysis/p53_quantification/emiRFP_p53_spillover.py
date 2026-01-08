@@ -1,8 +1,12 @@
-# =========================
-# Spillover calibration (per z baseline) and per-pixel correction
-# =========================
+"""
+Estimate and save bleed-through correction for p53 imaging.
 
-# ---- USER CONFIG ----
+Fits a global linear spillover coefficient s for BLEED_FROM → p53 using in-cell
+pixels (optionally subsampled per z). Computes a per-z baseline b0(z) from the
+median residual (p53 - s*BLEED_FROM), saves (s, b0z) to .npz, and outputs a
+before/after scatter diagnostic.
+"""
+
 BLEED_FROM = "A12"   # <-- set to "F3" or "A12": the channel that bleeds into C ("p53")
 C_CHANNEL  = "p53"  # your readout channel (C)
 

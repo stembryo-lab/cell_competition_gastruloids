@@ -1,3 +1,22 @@
+"""
+Segment nuclei for p53 quantification.
+
+Runs 2D StarDist (2D_versatile_fluo) to segment nuclear objects in fluorescence
+channels used to identify the two genotypes/labels (F3 and A12) in the p53 dataset.
+Segmentation is performed independently per channel and per image, with optional
+manual error correction enabled.
+
+Dataset layout:
+- Conditions: WT, KO
+- Repeats: n2, n3, n4, n3_Ab
+- Channels per stack: ["A12", "p53", "F3", "DAPI"]
+
+Notes:
+- p53 itself is not segmented here; this script produces nuclear masks for the
+  lineage markers (F3, A12) that will later be used to quantify nuclear p53
+  intensity (typically in the p53 channel, optionally also DAPI for QC).
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 

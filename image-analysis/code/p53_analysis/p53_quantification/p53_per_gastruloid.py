@@ -1,3 +1,14 @@
+"""
+Quantify nuclear p53 per cell and summarize per gastruloid (by z-plane).
+
+For each dataset (WT/KO; n2/n3/n4), loads curated nuclear masks for F3 and A12,
+applies spillover correction to the p53 channel (per-marker calibration: slope s
+and per-z baseline b0(z)), and computes mean corrected p53 per nucleus. Outputs
+per-gastruloid mean p53 per z-plane and the corresponding cell counts for F3 and
+A12 (CSV). Also computes WT-weighted z-wise averages (weighted by cell counts)
+to normalize F3 p53 profiles and saves the normalized matrix.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 import numpy as np

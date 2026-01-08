@@ -1,5 +1,12 @@
-# In this file we quantify the emiRFP and mCherry channels and seek for spillovers between channels.
-# We also remove cells that are missclassified
+"""
+Validate and curate F3/A12 nuclear identity for p53 analysis.
+
+This script quantifies nuclear emiRFP (A12) and mCherry (F3) signals to detect
+misclassified or low-signal nuclei. Cells are clustered per z-plane in
+log(emiRFP)–log(mCherry) space to identify spillover or ambiguous cases.
+Flagged nuclei are removed from the F3 and A12 segmentation results prior to
+nuclear p53 quantification.
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels

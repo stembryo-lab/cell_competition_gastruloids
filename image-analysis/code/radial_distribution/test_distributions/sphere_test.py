@@ -1,3 +1,12 @@
+"""
+Toy example for the radial-position metric using an sphere.
+
+Generates random points inside an sphere and points on its surface, computes
+for each point its distance to the centroid and to the closest surface point, and
+plots the resulting relative position distribution P = d_centroid / (d_centroid + d_edge).
+Also includes a 2D circle schematic illustrating the metric.
+"""
+
 from qlivecell import compute_distance_xyz_jit, check_or_create_dir, compute_distance_xy_jit, compute_dists_jit
 import numpy as np
 import matplotlib.pyplot as plt

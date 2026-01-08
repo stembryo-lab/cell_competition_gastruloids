@@ -1,3 +1,12 @@
+"""
+Example visualization of cytoplasm segmentation for YAP analysis.
+
+Cytoplasm masks are derived by combining the previously computed whole-cell
+(membrane/GPI-GFP) and nuclear (DAPI) segmentations, i.e. cytoplasm = cell mask
+minus nuclear mask. This script only loads those segmentations and plots an
+example overlay to illustrate the resulting cytoplasmic region.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, get_file_names, fill_channels, tif_reader_5D
 import numpy as np

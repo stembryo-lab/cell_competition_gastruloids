@@ -1,3 +1,11 @@
+"""
+Whole-cell segmentation for YAP analysis.
+
+Segments full cell outlines using the membrane marker (GPI-GFP) with DAPI as a
+secondary channel in Cellpose (cyto3) via qlivecell, and removes small segmented
+objects (area < size_th) before saving the cleaned cell masks per file/condition.
+"""
+
 from qlivecell import get_file_name, cellSegTrack, get_file_names, check_or_create_dir, fill_channels
 from cellpose import models
 model = models.CellposeModel(gpu=True, model_type='cyto3')

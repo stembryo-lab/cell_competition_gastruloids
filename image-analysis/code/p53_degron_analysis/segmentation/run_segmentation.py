@@ -1,3 +1,12 @@
+"""
+Segment nuclei for p53-degron quantification.
+
+Runs 2D StarDist (2D_versatile_fluo) independently on the F3 and A12 channels to
+generate nuclear masks for each stack in the p53-degron timecourse/auxin conditions.
+These masks are later used to quantify nuclear p53 intensity (after spillover/background
+correction) per cell and per gastruloid.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 

@@ -1,3 +1,23 @@
+"""
+Quantify single-cell YAP nuclear-to-cytoplasmic (N/C) ratios.
+
+For each image and condition, loads precomputed whole-cell (GPI-GFP) and nuclear
+(DAPI) segmentations, matches nuclei to cells by nearest-centroid tracking, and
+derives a cytoplasm mask as (cell mask \ nucleus mask) after overlap QC.
+
+Per matched cell:
+- Measure mean nuclear YAP intensity and subtract nuclear background (AB-only).
+- Measure mean cytoplasmic YAP intensity and subtract cytoplasmic background.
+- Compute N/C = (YAP_nuc_corrected) / (YAP_cyto_corrected).
+- Measure nuclear A12 (emiRFP) intensity to classify cells using thresholds
+  (low_th / up_th), producing F3-like vs A12-like subsets.
+
+Outputs:
+- Per-file CSVs with [Nuclear, Cyto, N/C] for F3-like and A12-like cells.
+- Aggregated distributions per condition (WT, KO8, KO25), with outlier removal
+  (IQR rule) and KDE + histogram plots saved to figures, plus summary CSVs.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, get_file_names, check_or_create_dir, fill_channels, tif_reader_5D
 from qlivecell.celltrack.core.tracking.tracking import greedy_tracking

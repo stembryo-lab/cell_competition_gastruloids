@@ -1,3 +1,9 @@
+"""
+Loads existing 3D segmentations and removes objects that are unlikely to
+correspond to cells based on their area at their center plane. Thresholds 
+are defined elsewhere.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 

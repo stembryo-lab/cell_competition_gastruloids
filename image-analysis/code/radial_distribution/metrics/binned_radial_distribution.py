@@ -1,3 +1,13 @@
+"""
+Binned radial distribution analysis.
+
+Loads per-cell radial-position values (P = d_centroid / (d_centroid + d_edge)),
+bins them into radial shells (multiple bin numbers), and exports:
+- per-embryo binned profiles to CSV
+- summary plots (WT vs KO; F3 vs A12) in both raw and volume-normalized form.
+Also writes single-cell radial-position tables for each condition/time point.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, get_file_names, check_or_create_dir
 import numpy as np

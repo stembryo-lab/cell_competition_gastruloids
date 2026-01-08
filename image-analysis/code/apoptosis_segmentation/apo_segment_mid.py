@@ -1,3 +1,10 @@
+"""
+Manual segmentation of mid apoptotic (Casp3+) events.
+
+Use the interactive correction/annotation workflow (qlivecell) 
+to manually  delineate mid apoptotic objects. 
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 

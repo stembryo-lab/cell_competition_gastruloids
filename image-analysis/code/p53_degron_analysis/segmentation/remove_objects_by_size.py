@@ -1,3 +1,11 @@
+"""
+Remove debris from p53-degron nuclear segmentations.
+
+Loads F3 and A12 segmentations for each stack and filters nuclei by area
+(µm^2), removing objects smaller than `size_th_low` or larger than `size_th_high`.
+Updates labels in-place after deletion.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels
 

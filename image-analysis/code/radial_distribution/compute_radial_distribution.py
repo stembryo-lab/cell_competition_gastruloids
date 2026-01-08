@@ -1,3 +1,11 @@
+"""
+Compute radial cell distribution metrics from saved segmentations.
+
+Loads F3/A12/Casp3 segmentations, estimates the gastruloid centroid, and segments
+the gastruloid boundary using active contours (Chan-Vese / “active contours without edges”).
+For each cell, computes distances to the centroid and to the closest boundary point,
+and saves per-embryo distance arrays for downstream radial-distribution analysis.
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels, compute_distance_xyz_jit, compute_dists_jit, EmbryoSegmentation, tif_reader_5D

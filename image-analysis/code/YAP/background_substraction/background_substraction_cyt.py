@@ -1,3 +1,12 @@
+"""
+Estimate cytoplasmic YAP background intensity.
+
+Uses antibody-only control conditions. Loads whole-cell (GPI-GFP) and nuclear (DAPI)
+segmentations, matches cells by centroid proximity (greedy tracking), builds a
+cytoplasm mask as (whole-cell mask \ nuclear mask), and samples YAP intensity in
+that cytoplasm region to obtain the background distribution and threshold.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, get_file_names, tif_reader_5D, check_or_create_dir
 import numpy as np

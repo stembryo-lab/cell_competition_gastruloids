@@ -1,3 +1,11 @@
+"""
+Compare the radial distribution of apoptotic cells to the full cell population.
+
+Loads precomputed radial-distance arrays and computes the relative radial position
+d = d_centroid / (d_centroid + d_edge) for all cells vs. Casp3+ cells (early/mid/late).
+Generates summary plots across time points (WT and KO) and saves figures to disk.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, get_file_names, check_or_create_dir
 import numpy as np

@@ -1,5 +1,12 @@
-# In this file we quantify the emiRFP and mCherry channels and seek for spillovers between channels.
-# We also remove cells that are missclassified
+"""
+Detect and remove misclassified nuclei in the p53-degron dataset.
+
+For each z-plane, quantify lineage-marker intensities (F3/mCherry and A12/emiRFP)
+inside nuclear masks, cluster cells in log-intensity space (k=2), and flag
+“spillover” assignments (cluster ≠ segmentation label and/or low-signal tail).
+Then reload the saved segmentations and delete the flagged labels, updating
+labels in-place. Also saves per-z diagnostic scatter plots.
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels

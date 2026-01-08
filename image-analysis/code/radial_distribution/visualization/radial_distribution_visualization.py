@@ -1,3 +1,11 @@
+"""
+Visual example of the radial-position metric on a single gastruloid.
+
+Loads saved segmentations, segments the gastruloid edge on one z-slice, and
+illustrates the metric by plotting a representative cell, the gastruloid centroid,
+and the closest point on the edge (with the corresponding distance vectors).
+Exports the figure as SVG/PDF.
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels, compute_dists_jit, compute_distance_xy_jit, EmbryoSegmentation, tif_reader_5D
@@ -223,7 +231,7 @@ ax.set_yticks([])
 ax.set_xlim(100, 512-100)
 ax.set_ylim(100, 512-100)
 plt.tight_layout()
-plt.savefig(path_figures_exp+"radialevo.svg")
-plt.savefig(path_figures_exp+"radialevo.pdf")
+plt.savefig(path_figures_exp+"radial_example.svg")
+plt.savefig(path_figures_exp+"radial_example.pdf")
 plt.show()
 

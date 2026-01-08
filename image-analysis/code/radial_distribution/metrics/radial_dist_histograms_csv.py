@@ -1,3 +1,11 @@
+"""
+Export radial-position values to CSV.
+
+Loads precomputed distance arrays (to centroid and to edge), computes the radial
+position P = d_centroid / (d_centroid + d_edge), and writes per-file P values to
+CSV for F3, A12, and Casp3+ populations (WT and KO; per time point).
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, get_file_names, check_or_create_dir
 import numpy as np

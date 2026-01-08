@@ -1,3 +1,11 @@
+"""
+Compute cell counts and apoptotic proportions from saved segmentations.
+
+Loads the precomputed F3/A12 segmentations and Casp3 segmentations (early/mid/late),
+counts objects per embryo, assigns apoptotic events to F3 vs A12 by channel intensity,
+and exports per-file counts to a CSV for downstream plotting/statistics.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 import numpy as np

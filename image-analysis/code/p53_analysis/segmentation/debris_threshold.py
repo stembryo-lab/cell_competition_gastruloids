@@ -1,4 +1,12 @@
-# In this file we compute the debris threshold for each gastruloid
+"""
+Compute an area-based debris threshold for p53 nuclei.
+
+Loads the precomputed StarDist nuclear segmentations for F3 and A12 across all
+conditions/repeats, pools nuclear areas (µm²), and fits a 1D KDE to the area
+distribution. The debris threshold is set to the first local minimum of the KDE
+(i.e., the valley separating small debris from nuclei). A diagnostic histogram +
+KDE curve with the selected cutoff is saved.
+"""
 
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, fill_channels

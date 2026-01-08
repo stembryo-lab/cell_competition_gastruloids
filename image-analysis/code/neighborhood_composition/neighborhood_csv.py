@@ -1,3 +1,12 @@
+"""
+Compute neighborhood composition using k-nearest neighbors and export to CSV.
+
+Loads saved segmentations (F3, A12, and Casp3 early/mid/late), builds a 3D kNN
+graph from cell centers, and computes for each population the fraction of A12
+neighbors (normalized by global F3/A12 abundance). Results are saved per embryo
+for multiple k.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 import numpy as np

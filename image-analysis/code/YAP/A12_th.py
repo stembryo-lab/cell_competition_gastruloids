@@ -1,3 +1,11 @@
+"""
+Define emiRFP intensity thresholds for cell classification.
+
+Measures mean nuclear emiRFP signal across conditions, builds the
+intensity distribution, and selects lower and intermediate thresholds from the
+histogram to classify cells in downstream YAP analysis.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, get_file_names, tif_reader_5D, check_or_create_dir
 import numpy as np

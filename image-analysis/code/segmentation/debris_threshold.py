@@ -1,3 +1,11 @@
+"""
+Compute debris-removal size thresholds from segmentation area distributions.
+
+Loads existing 3D segmentations, collects per-object center areas (µm²) across
+embryos/conditions, fits a KDE to the area distribution, and uses the first local
+minimum of the density as the debris threshold. Outputs summary plots to PDF.
+"""
+
 ### LOAD PACKAGE ###
 from qlivecell import get_file_name, cellSegTrack, check_or_create_dir, get_file_names, correct_path, fill_channels
 
