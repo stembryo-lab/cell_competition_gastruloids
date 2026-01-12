@@ -183,7 +183,7 @@ for COND in CONDITIONS:
 
             mask_coincidence_cyto = ~np.isin(mask1_view, mask2_view)
             cyto_mask = np.array([mask1[i] for i, j in enumerate(mask_coincidence_cyto) if j])
-            if len(cyto_mask)<5:continue
+            if len(cyto_mask)<10:continue
             img = hyperstack[0,z,ch_yap]
             cyt_val = np.maximum(np.mean(img[cyto_mask[:, 1], cyto_mask[:, 0]]) - YAP_cyt_b, 0)
             cyt_quant[-1].append(cyt_val)
