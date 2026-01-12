@@ -11,7 +11,7 @@ python -m pip install 'qlivecell @ git+https://github.com/dsb-lab/qlivecell@0.8'
 ```
 
 The `qlivecell` package provides tools for segmentation, error correction, and downstream analysis.  
-Cellular segmentation relies on **StarDist** (https://github.com/stardist/stardist) and **Cellpose** (https://github.com/MouseLand/cellpose). Please refer to their respective GitHub pages for installation instructions.
+Cellular segmentation relies on **StarDist** (https://github.com/stardist/stardist) and **Cellpose** (https://github.com/MouseLand/cellpose). Please refer to their respective GitHub pages for installation instructions in case they are not properly installed during `qlivecell` installation.
 
 Inside the `cell_competition_gastruloids/image-analysis` folder you will find two subfolders:
 
@@ -22,9 +22,9 @@ Inside the `cell_competition_gastruloids/image-analysis` folder you will find tw
 
 #### `examples` folder
 
-The examples folder contains a single runnable Jupyter notebook, example.ipynb, which provides a minimal, end-to-end demonstration of all image-analysis steps performed in this work using a single gastruloid.
+The examples folder contains three runnable Jupyter notebook, example1.ipynb, example2.ipynb, and example3.ipynb which provides a minimal, end-to-end demonstration of all image-analysis steps performed in this work using a set of three gastruloids
 
-The notebook is fully executable and is intended to illustrate the complete analysis workflow, from raw image data to quantitative, single-cell–resolved spatial descriptors.
+The notebooks are fully executable and are intended to illustrate the complete analysis workflow, from raw image data to quantitative, single-cell–resolved spatial descriptors. The contents of each of the examples is described below.
 
 ---
 
@@ -44,15 +44,16 @@ Below, you will find:
 
 ### Example Workflows (Runnable)
 
-The example workflow is fully contained in the notebook:
-- `examples/example.ipynb`
+We have designed a set of three runnable examples that represented all the image analysis work shown in the article associated with this repository. The contents of the three example are the following:
 
-This notebook provides a minimal, end-to-end workflow illustrating how 3D gastruloid images are processed, segmented, and analyzed using qlivecell. All analyses are performed on a single example gastruloid and are presented in the recommended execution order.
+#### Example 1
+
+This first example, found at `examples/example1.ipynb` in the form of a jupyter notebook, provides a minimal, end-to-end workflow illustrating how 3D gastruloid images are processed, segmented, and analyzed using qlivecell. All analyses are performed on a single example gastruloid and are presented in the recommended execution order.
 
 The example dataset consists of a single file:
-- `gastruloid.tif`: A 3D multichannel image of a gastruloid used as a proof of concept for the full analysis pipeline.
+- `gastruloid1.tif`: A 3D multichannel image of a gastruloid containning two cell populations with two separate nuclear markers, mCherry and emiRFP.
 
-Before running the notebook, make sure that qlivecell is installed and that the path to the example gastruloid is correctly specified.
+Before running the notebook, make sure that  `qlivecell` is installed and that the path to the example gastruloid is correctly specified.
 
 The notebook covers the following analysis steps:
 
@@ -68,20 +69,64 @@ Cleaning of the segmentation masks by removing objects below the estimated size 
 4. **Cell-type counts**
 Quantification of the number of cells in each population within the gastruloid, assuming the presence of multiple cell types.
 
-5. **Nuclear fluorescence quantification**
-Single-cell nuclear fluorescence quantification using the segmentation masks, including background subtraction and extraction of per-cell intensity values.
-
-6. **Local cell density computation**
+5. **Local cell density computation**
 Computation of local cell density from the 3D segmentation results, capturing spatial crowding and tissue organization.
 
-7. **Neighborhood composition analysis**
+6. **Neighborhood composition analysis**
 Extraction of the cellular neighborhood composition for each cell, quantifying the identities of nearby cells. This analysis is only meaningful when more than one cell population is present.
 
-8. **Radial distribution analysis**
+7. **Radial distribution analysis**
 Analysis of the radial distribution of cells relative to the gastruloid center, enabling the study of spatial patterning along the radial axis.
 
 Together, these analyses illustrate how raw 3D image data are transformed into quantitative, single-cell–resolved spatial descriptors of gastruloid organization.
 
+
+#### Example 2
+
+The second example, found at `examples/example2.ipynb` contains a step by step description of YAP quantification as a nucleus to cytoplasm ratio.
+
+The example dataset consists of a two files in this case:
+- `gastruloid2.tif`: A 3D multichannel image of a gastruloid stained for YAP.
+- `gastruloid2_background.tif`: A 3D multichannel image of a gastruloid stained for YAP using only the secondary antibody to compute the background signal of such antibody due to inspecific bindings.
+
+The notebook covers the following analysis steps:
+
+1. **Nuclei segmentation and Debris removal**
+As opposed to the first example, in this one segmentation is separated in nucleus vs wholecell and is done using Cellpose. In this first step, the nuclei are segmented and debris is removed using the threshold computed in the previous example.
+
+2. **Whole cell segmentation and Debris removal**
+Segmentation of the whole cells using the membrane label GPI-GFP.
+
+3. **Quantification of YAP background**
+Quantification of YAP in nuclei and cytoplasm in a gastruloid stained only with the YAP secondary antibody. The cytoplasm is computed as the whole-cell masks minus the nuclear mask of that same cell.
+
+4. **Cell classification**
+This dataset lacks the mCherry label, so we used only the emiRFP signal to differentiate the two populations of cells. In this step we quantify a threhold of emiRFP to discern between the two populations.
+
+5. **YAP N/C quantification**
+Quntification of YAP as a Nucleus to Cytoplasm ratio. 
+
+#### Example 3
+
+Finally we present a third example which represent the p53 quantification carried out in the p53 quantification analysis and the p53 degron experiment. 
+
+This example, found at `examples/example3.ipynb` uses a dataset consisting of two files:
+- `gastruloid3.tif`: A 3D multichannel image of a gastruloid stained for p53.
+- `gastruloid3_background.tif`: A 3D multichannel image of a gastruloid stained for p53 using only the secondary antibody to compute the background signal of such antibody due to inspecific bindings.
+
+The notebook covers the following analysis steps:
+
+1. **Spillover correction**
+Using a global linear calibration model, we correct for signal bleed through from the mCherry and emiRFP channels into the p53 channel.
+
+2. **Segmentation and debris removal*
+Similarly to the first example, we use StarDist for the nuclear segmentation and the same threshold computed in that example for the debris removal
+
+3. **Removal of misclassified cells*
+Detection and removal of cells segmented in the wrong channel. 
+
+4. **p53 quantification**
+Quantification of p53 using the spillover coefficients computed on step one.
 ---
 
 ### Complete Analysis Pipeline (Reference Only)
