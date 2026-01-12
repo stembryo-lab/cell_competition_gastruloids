@@ -119,10 +119,10 @@ The notebook covers the following analysis steps:
 1. **Spillover correction**
 Using a global linear calibration model, we correct for signal bleed through from the mCherry and emiRFP channels into the p53 channel.
 
-2. **Segmentation and debris removal*
+2. **Segmentation and debris removal**
 Similarly to the first example, we use StarDist for the nuclear segmentation and the same threshold computed in that example for the debris removal
 
-3. **Removal of misclassified cells*
+3. **Removal of misclassified cells**
 Detection and removal of cells segmented in the wrong channel. 
 
 4. **p53 quantification**
