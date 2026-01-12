@@ -57,25 +57,25 @@ Before running the notebook, make sure that  `qlivecell` is installed and that t
 
 The notebook covers the following analysis steps:
 
-1. **Cell segmentation**
+1. **Cell segmentation.**
 Initial 3D cell segmentation of the gastruloid using StarDist and Cellpose through the qlivecell interface, producing labeled segmentation masks and associated metadata.
 
-2. **Debris size threshold estimation**
+2. **Debris size threshold estimation.**
 Estimation of a size-based threshold to distinguish real cells from small segmented objects corresponding to noise or debris.
 
-3. **Removal of segmented debris**
+3. **Removal of segmented debris.**
 Cleaning of the segmentation masks by removing objects below the estimated size threshold.
 
-4. **Cell-type counts**
+4. **Cell-type counts.**
 Quantification of the number of cells in each population within the gastruloid, assuming the presence of multiple cell types.
 
-5. **Local cell density computation**
+5. **Local cell density computation.**
 Computation of local cell density from the 3D segmentation results, capturing spatial crowding and tissue organization.
 
-6. **Neighborhood composition analysis**
+6. **Neighborhood composition analysis.**
 Extraction of the cellular neighborhood composition for each cell, quantifying the identities of nearby cells. This analysis is only meaningful when more than one cell population is present.
 
-7. **Radial distribution analysis**
+7. **Radial distribution analysis.**
 Analysis of the radial distribution of cells relative to the gastruloid center, enabling the study of spatial patterning along the radial axis.
 
 Together, these analyses illustrate how raw 3D image data are transformed into quantitative, single-cell–resolved spatial descriptors of gastruloid organization.
@@ -91,19 +91,19 @@ The example dataset consists of a two files in this case:
 
 The notebook covers the following analysis steps:
 
-1. **Nuclei segmentation and Debris removal**
+1. **Nuclei segmentation and Debris removal.**
 As opposed to the first example, in this one segmentation is separated in nucleus vs wholecell and is done using Cellpose. In this first step, the nuclei are segmented and debris is removed using the threshold computed in the previous example.
 
-2. **Whole cell segmentation and Debris removal**
+2. **Whole cell segmentation and Debris removal.**
 Segmentation of the whole cells using the membrane label GPI-GFP.
 
-3. **Quantification of YAP background**
+3. **Quantification of YAP background.**
 Quantification of YAP in nuclei and cytoplasm in a gastruloid stained only with the YAP secondary antibody. The cytoplasm is computed as the whole-cell masks minus the nuclear mask of that same cell.
 
-4. **Cell classification**
+4. **Cell classification.**
 This dataset lacks the mCherry label, so we used only the emiRFP signal to differentiate the two populations of cells. In this step we quantify a threhold of emiRFP to discern between the two populations.
 
-5. **YAP N/C quantification**
+5. **YAP N/C quantification.**
 Quntification of YAP as a Nucleus to Cytoplasm ratio. 
 
 #### Example 3
@@ -116,16 +116,16 @@ This example, found at `examples/example3.ipynb` uses a dataset consisting of tw
 
 The notebook covers the following analysis steps:
 
-1. **Spillover correction**
+1. **Spillover correction.**
 Using a global linear calibration model, we correct for signal bleed through from the mCherry and emiRFP channels into the p53 channel.
 
-2. **Segmentation and debris removal**
+2. **Segmentation and debris removal.**
 Similarly to the first example, we use StarDist for the nuclear segmentation and the same threshold computed in that example for the debris removal
 
-3. **Removal of misclassified cells**
+3. **Removal of misclassified cells.**
 Detection and removal of cells segmented in the wrong channel. 
 
-4. **p53 quantification**
+4. **p53 quantification.**
 Quantification of p53 using the spillover coefficients computed on step one.
 ---
 
